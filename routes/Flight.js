@@ -1,0 +1,27 @@
+const express = require("express")
+const router = express.Router()
+const flight = require("../controllers/FlightControllerDB")
+const validatorMW = require("../middlewares/FlightValidatorMV")
+const validatorsMW = require("../middlewares/FlightsValidatorMW")
+const idValidator = require("../middlewares/IdValidator")
+const reserveFlightsVM = require("../middlewares/reserveFlights")
+const getElasticFlights = require("../middlewares/getElasticFlights")
+const getFlights = require("../middlewares/getFlights")
+// login authentication
+router.post("/",validatorMW, flight.postNewFlight)
+router.post("/bulk",validatorsMW, flight.postNewFlights)
+router.get("/", flight.getAllFlights)
+router.post("/from-to", flight.getFlightFromTo)
+router.post("/from-to-date", flight.getFlightFromToDate)
+router.post("/from-to-date-class-no", getFlights, flight.getFlightFromToDateClassNo)
+router.post("/from-to-elastic-date-class-no", getElasticFlights, flight.getFlightFromToElasticDateClassNo)
+router.post("/flight-seats",idValidator, flight.getFlightSeats)
+router.post("/class-seats",idValidator, flight.getClassSeats)
+router.post("/reserve-seats",reserveFlightsVM, flight.reserveSeats)
+router.post("/ticket-details",idValidator, flight.getTicketDetailsByTicketNumber)
+router.post("/tickets-with-linked-users",idValidator, flight.getAllTicketsLinkedData)
+router.post("/get-ticket",idValidator, flight.searchByTicketNo)
+router.post("/get-flight-with-name", flight.getFlightWithName)
+
+module.exports = router
+
